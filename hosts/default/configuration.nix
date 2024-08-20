@@ -35,6 +35,21 @@
   # Nix-Flakes 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # auto-cpufreq configuration
+  programs.auto-cpufreq.enable = true;
+    # optionally, you can configure your auto-cpufreq settings, if you have any
+    programs.auto-cpufreq.settings = {
+    charger = {
+      governor = "performance";
+      turbo = "auto";
+    };
+
+    battery = {
+      governor = "powersave";
+      turbo = "auto";
+    };
+  };
+
   # Set your time zone.
   time.timeZone = "Asia/Manila";
   #services.automatic-timezoned.enable = true;
@@ -62,6 +77,7 @@
   fcitx5.addons = with pkgs; [
      rime-data
      fcitx5-gtk
+     fcitx5-chinese-addons
      fcitx5-rime
    ];
   };
@@ -143,9 +159,6 @@
 	python3
 	vscode
 	mission-center
-	vistafonts
-	vistafonts-cht
-	vistafonts-chs
 	gnome-keyring
 	gtk2
 	gtk3
@@ -158,6 +171,22 @@
         pip
         pygobject3
       ]))
+];
+
+fonts.packages = with pkgs; [
+  noto-fonts
+  noto-fonts-cjk
+  noto-fonts-emoji
+  corefonts
+  liberation_ttf
+  fira-code
+  fira-code-symbols
+  mplus-outline-fonts.githubRelease
+  dina-font
+  proggyfonts
+  #vistafonts
+	#vistafonts-cht
+	#vistafonts-chs
 ];
 
 services.xserver.excludePackages = with pkgs; [ 
