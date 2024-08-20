@@ -2,27 +2,21 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      inputs.home-manager.nixosModules.default
     ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  boot.initrd.luks.devices."luks-d2f5ab62-1c40-41a9-af1e-30cae9a84c8f".device = "/dev/disk/by-uuid/d2f5ab62-1c40-41a9-af1e-30cae9a84c8f";
-  
+  boot.initrd.luks.devices."luks-ae9d212b-67be-4f38-bae9-0549e074e46d".device = "/dev/disk/by-uuid/ae9d212b-67be-4f38-bae9-0549e074e46d";
   networking.hostName = "nixos"; # Define your hostname.
-  
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  
-  # Nix-Flakes 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -38,12 +32,14 @@
   # Enable Bluetooth
   hardware.bluetooth.enable = true;
 
-  # Set your time zone.
-  #time.timeZone = "Asia/Manila";
-  #services.ntp.enable = true;
-  services.automatic-timezoned.enable = true;
+  # Nix-Flakes 
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  
+  # Set your time zone.
+  time.timeZone = "Asia/Manila";
+  #services.automatic-timezoned.enable = true;
+
+
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -59,19 +55,29 @@
     LC_TIME = "en_US.UTF-8";
   };
 
+  # Fcitx5
+  i18n.inputMethod = {
+  enabled = "fcitx5";
+  waylandFrontend = true;
+  fcitx5.addons = with pkgs; [
+     rime-data
+     fcitx5-gtk
+     fcitx5-rime
+   ];
+  };
+
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-  
- i18n.inputMethod = {
-  enabled = "ibus";
-  ibus.engines = with pkgs.ibus-engines; [
-	libpinyin
-  ];
-};
+  #Enable xdg.portal
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
+
+  # Enable the XFCE Desktop Environment.
+  services.xserver.displayManager.lightdm.enable = true;
+  services.xserver.desktopManager.xfce.enable = true;
 
   # Configure keymap in X11
   services.xserver = {
@@ -87,6 +93,7 @@
   nssmdns = true;
   openFirewall = true;
   };
+
 
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
@@ -111,16 +118,15 @@
   users.users.marks = {
     isNormalUser = true;
     description = "marks";
-    extraGroups = [ "mlocate" "samba" "libvirtd" "networkmanager" "wheel" ];
+    extraGroups = [ "mlocate" "samba" "libvirtd" "networkmanager" "wheel"];
     packages = with pkgs; [
+    #  thunderbird
     ];
   };
 
   # Enable flatpak
   services.flatpak.enable = true;
-  
-  # Install firefox.
-  #programs.firefox.enable = true;
+
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -128,43 +134,32 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    gnome.gnome-software
-    gnomeExtensions.logo-menu
-    gnomeExtensions.clipboard-indicator
-    gnomeExtensions.useless-gaps
-    gnomeExtensions.dash-to-panel
-    gnome-terminal
-    gnome-tweaks
-    neovim
-    wget
-    git
-    flatpak
-    fastfetch
-    python3
-    vscode
-    brave
-    mission-center
-    vistafonts
-    vistafonts-cht
-    vistafonts-chs
-  ];
+  	wget
+	git
+	neovim
+	pavucontrol
+	brave
+	fastfetch
+	python3
+	vscode
+	mission-center
+	vistafonts
+	vistafonts-cht
+	vistafonts-chs
+	gnome.gnome-keyring
+	gtk2
+	gtk3
+	gtk4
+	xfce.xfce4-panel-profiles
+	xfce.xfce4-whiskermenu-plugin
+	xfce.xfce4-pulseaudio-plugin
+	xfce.xfce4-clipman-plugin
+    (python3.withPackages (subpkgs: with subpkgs; [
+        pip
+        pygobject3
+      ]))
+];
 
-environment.gnome.excludePackages = with pkgs; [
-	gnome-tour
-	gnome.gnome-music
-	gnome-system-monitor
-	nixos-render-docs
-	pantheon.epiphany
-	yelp
-	snapshot
-	gnome.gnome-contacts
-	gnome.gnome-weather
-	gnome.gnome-maps
-	gnome-calendar
-	geary
-	seahorse
-	gnome-console
-  ];
 services.xserver.excludePackages = with pkgs; [ 
 	xterm 
   ];
