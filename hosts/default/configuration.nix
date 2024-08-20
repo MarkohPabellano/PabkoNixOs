@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports =
@@ -58,7 +58,7 @@
   # Fcitx5
   i18n.inputMethod = {
   enabled = "fcitx5";
-  waylandFrontend = true;
+  #waylandFrontend = true;
   fcitx5.addons = with pkgs; [
      rime-data
      fcitx5-gtk
@@ -146,7 +146,7 @@
 	vistafonts
 	vistafonts-cht
 	vistafonts-chs
-	gnome.gnome-keyring
+	gnome-keyring
 	gtk2
 	gtk3
 	gtk4
