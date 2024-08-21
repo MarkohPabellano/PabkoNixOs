@@ -22,7 +22,5 @@
         auto-cpufreq.nixosModules.default
       ];
     };
-    homeConfigurations = {
     };
-  };
-}
+  }

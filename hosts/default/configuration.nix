@@ -28,13 +28,6 @@
   # Enable Virtualization
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
-  
-  # Enable Bluetooth
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = false;
-  }; 
-  services.blueman.enable = true;
 
   # Nix-Flakes 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -115,21 +108,29 @@
   };
 
 
-  # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  # Sound (Pipewire)
+  #sound.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
+    jack.enable = true;
   };
+  systemd.user.services.pipewire-pulse.path = [ pkgs.pulseaudio ];
+
+  # Bluetooth Stuff
+  services.blueman.enable = true;
+  hardware.bluetooth = {
+    enable = true;
+    package = pkgs.bluez;
+    powerOnBoot = false;
+    settings.general = {
+      enable = "Source,Sink,Media,Socket";
+    };
+  };
+
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
