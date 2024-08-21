@@ -13,7 +13,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, auto-cpufreq, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, auto-cpufreq, ... }@inputs: {
     nixosConfigurations.default = nixpkgs.lib.nixosSystem {
       specialArgs = {inherit inputs;};
       modules = [
@@ -21,6 +21,8 @@
         inputs.home-manager.nixosModules.default
         auto-cpufreq.nixosModules.default
       ];
+    };
+    homeConfigurations = {
     };
   };
 }
