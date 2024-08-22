@@ -109,7 +109,7 @@
 
 
   # Sound (Pipewire)
-  #sound.enable = false;
+  hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -168,6 +168,7 @@
 	gtk2
 	gtk3
 	gtk4
+  libsecret
 	xfce.xfce4-panel-profiles
 	xfce.xfce4-whiskermenu-plugin
 	xfce.xfce4-pulseaudio-plugin
