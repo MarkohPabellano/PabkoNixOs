@@ -49,6 +49,19 @@
     #   org.gradle.console=verbose
     #   org.gradle.daemon.idletimeout=3600000
     # '';
+    ".bashrc".text = ''
+      function msdos_pwd {
+          local dir="`pwd`"
+          echo $dir | tr '/' '\\'
+      }
+
+      export PS1='C:`msdos_pwd`> '
+
+      echo
+      echo
+      echo "Microsoft(R) Windows 95"
+      echo "   (C)Copyright Microsoft Corp 1981-1996."
+    '';
   };
 
   # Home Manager can also manage your environment variables through
@@ -76,6 +89,10 @@ programs.git = {
   userEmail = "markohblpabellno@gmail.com";
   userName = "Markoh Pabellano";
 };
+
+#programs.bash = {
+#  enable = true;
+#  };
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
